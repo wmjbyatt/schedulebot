@@ -1,29 +1,7 @@
 #!/usr/bin/nodejs --use_strict
 const Discord = require("discord.js");
 const client = new Discord.Client();
-
 var config = require('./config.json');
-
-/*
-// config file contents:
-{
-  auth_token: 'REDACTED',
-  active_channels: ['channel_name'],
-  my_name: 'botname'
-}
-*/
-
-/*
-// TODO: Implement these.  They'll need data structures and somewhere to put them...
-
-function eventbook() {
-  add_event: function(owner, title, description) {};
-  cancel_event: function(event_id) {};
-  signup: function(event_id, name) {};
-  cancel_signup: function(owner, event_id) {};
-  list: function() {};
-};
-*/
 
 function log(msg) {
   console.log(Date.now() + ' - ' + msg);
@@ -31,6 +9,14 @@ function log(msg) {
 
 function debug(msg) {
   if (config.debug) { log('DEBUG - ' + msg) };
+};
+
+var eventbook = {
+  add_event: function(owner, description) { return 5; },
+  cancel_event: function(event_id) {},
+  signup: function(event_id, name) {},
+  cancel_signup: function(owner, event_id) {},
+  list: function() {},
 };
 
 var bot = {
@@ -76,13 +62,11 @@ var bot = {
     var cmd = msg.shift();
     debug('reached take_request');
     log('invoking: ' + cmd);
-
     return this.my_commands.includes( cmd ) ? eval(`this.${cmd}(msg,speaker)`) : null;
   },
 
   reply_to: function( msg, speaker ) {
     var answer = this.take_request( msg, speaker ) 
-
     return answer ? answer : this.confused_reply();
   },
 
@@ -91,12 +75,18 @@ var bot = {
     return "I'm sorry, I don't understand.";
   },
 
+  internal_error: function(err) {
+    log(err);
+    return "I have a headache.";
+  },
+
   help: function(msg) {
     return "This is a stub help function.";
   },
 
-  schedule: function() {
-
+  schedule: function(msg, author) {
+    try { return "Event added with ID " + eventbook.add_event(msg, author); }
+    catch(err) { return internal_error(err); }
   },
 
   cancel: function() {
