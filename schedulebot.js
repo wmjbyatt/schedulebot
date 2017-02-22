@@ -34,7 +34,6 @@ var bot = {
 
   parse: function( content, author, channel ) {
     var msg = content.split(' ');
-    console.log(author);
 
     if ( this.listening_to(channel) && ( author != config.my_name )) {
       return this.reply_to( msg, author );
