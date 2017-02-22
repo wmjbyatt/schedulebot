@@ -143,10 +143,9 @@ var bot = {
       case signup:
       
       default: 
-        // usage
+        return `The commands I know are schedule, signup, list, cancel, and help.  Try: ${config.my_name} help <command>.`;
     } 
 
-    return "";
   },
 
   schedule: function(msg) {
