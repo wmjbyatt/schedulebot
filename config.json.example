@@ -2,5 +2,6 @@
 "auth_token": "LOREMIPSUMDOLORSET",
 "active_channels": [ "general" ],
 "my_name": "schedulebot",
+"leader_role": "Coach",
 "debug": ""
 }

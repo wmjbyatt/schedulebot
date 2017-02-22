@@ -1,7 +1,7 @@
 #!/usr/bin/nodejs --use_strict
 const Discord = require("discord.js");
 const client = new Discord.Client();
-var config = require('./config.json');
+const config = require('./config.json');
 
 function log(msg) {
   console.log(Date.now() + ' - ' + msg);
@@ -40,39 +40,66 @@ var bot = {
   });
   */
 
+  parse: function(msg) {
+    log('parsing: ' + msg.words );
+    var keyword = config.alert_words ? msg.words.shift() : null;
 
-  parse: function( content, author, channel ) {
-    var msg = content.split(' ');
-    log('parsing: ' + msg);
-
-    return this.should_hold_tongue(author,channel) ? null : this.reply_to( msg, author);
+    if ( !this.listening_to(msg.channel) ) {
+      return null;
+    } else if ( !this.for_me(keyword) ){
+      return null;
+    } else if ( msg.author == config.my_name) {
+      return null
+    } else {
+      return this.reply_to(msg);
+    };
   },
 
-  listening_to: function( channel ) {
-    debug('reached listening_to')
+  listening_to: function(channel) {
     return config.active_channels.includes(channel) ? true : false;
   },
 
-  should_hold_tongue: function( author, channel ) {
-    debug('reached should_hold_tongue')
-    return this.listening_to(channel) && ( author != config.my_name ) ? false : true;
+  for_me: function(keyword) {
+    debug('function: for_me');
+    debug('config.alert_words: ' + config.alert_words);
+    debug('keyword: ' + keyword);
+    
+    /*
+    /
+    / TODO: Fix this:
+    /
+    var alert = function (word) {
+      config.alert_words.map( function(x) {return x.includes(word);} );
+    };
+    */
+
+    var alert = function (word) { return config.alert_words.includes(word) ? true : false; };
+
+    if (config.alert_words) {
+      return alert(keyword) ? true : false;
+    } else {
+      return true;
+    };
   },
 
-  take_request: function( msg, speaker ) {
-    var cmd = msg.shift();
-    debug('reached take_request');
-    log('invoking: ' + cmd);
-    return this.my_commands.includes( cmd ) ? eval(`this.${cmd}(msg,speaker)`) : null;
-  },
-
-  reply_to: function( msg, speaker ) {
-    var answer = this.take_request( msg, speaker ) 
+  reply_to: function(msg) {
+    var answer = this.take_request(msg) 
     return answer ? answer : this.confused_reply();
   },
 
   confused_reply: function() {
     log('unknown command')
     return "I'm sorry, I don't understand.";
+  },
+
+  take_request: function(msg) {
+    if (msg) { 
+      var cmd = msg.words.shift();
+      log('invoking: ' + cmd);
+      return this.my_commands.includes(cmd) ? eval(`this.${cmd}(msg)`) : null;
+    } else {
+      return null;
+    };
   },
 
   internal_error: function(err) {
@@ -109,13 +136,22 @@ var bot = {
 client.on('ready', () => { log(`${config.my_name} online!`) });
 
 client.on('message', function(message) {
-    var content = message.content;
-    var author = message.author.username;
-    var channel = message.channel.name;
 
-    log(`message received from ${author} in ${channel}`);
+    debug('split content: ' + message.content.split(' '));
 
-    var bot_reply = bot.parse( content, author, channel );
+    var msg = {
+      words: message.cleanContent.split(' '),
+      author: message.author.username,
+      channel: message.channel.name,
+      from_coach: function() { message.author.hasRole(config.leader_role); },
+      bot_mentioned: message.isMentioned(client.user),
+    };
+
+    debug('msg.words: ' + msg.words);
+
+    log(`message received from ${msg.author} in ${msg.channel}`);
+
+    var bot_reply = bot.parse(msg);
     
     if ( bot_reply ) { message.reply( bot_reply ) };
 });
