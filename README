@@ -1,0 +1,9 @@
+schedulebot is a discord application written for the Goldwatch community.
+
+The bot is little more than scaffolding, and the following commands are currently stubs.
+
+help
+schedule
+cancel
+list
+signup
