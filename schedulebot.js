@@ -21,7 +21,6 @@ var eventbook = {
 
 var bot = {
   my_commands: [ 'help', 'schedule', 'cancel', 'list', 'signup' ],
-
   /* 
   / 
   / TODO: support modular registration of a new grammar
@@ -39,6 +38,8 @@ var bot = {
       // do the thing to msg
   });
   */
+
+  // Grammar nodes:
 
   parse: function(msg) {
     log('parsing: ' + msg.words );
@@ -64,6 +65,7 @@ var bot = {
     debug('config.alert_words: ' + config.alert_words);
     debug('keyword: ' + keyword);
     
+    var alert = function (word) { return config.alert_words.includes(word) ? true : false; };
     /*
     /
     / TODO: Fix this:
@@ -72,8 +74,6 @@ var bot = {
       config.alert_words.map( function(x) {return x.includes(word);} );
     };
     */
-
-    var alert = function (word) { return config.alert_words.includes(word) ? true : false; };
 
     if (config.alert_words) {
       return alert(keyword) ? true : false;
@@ -87,11 +87,6 @@ var bot = {
     return answer ? answer : this.confused_reply();
   },
 
-  confused_reply: function() {
-    log('unknown command')
-    return "I'm sorry, I don't understand.";
-  },
-
   take_request: function(msg) {
     if (msg) { 
       var cmd = msg.words.shift();
@@ -100,6 +95,13 @@ var bot = {
     } else {
       return null;
     };
+  },
+
+  // Replies:
+
+  confused_reply: function() {
+    log('unknown command')
+    return "I'm sorry, I don't understand.";
   },
 
   internal_error: function(err) {
