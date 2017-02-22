@@ -49,15 +49,15 @@ var bot = {
     return this.listening_to(channel) && ( author != config.my_name ) ? false : true;
   },
 
-  take_request: function( cmd ) {
+  take_request: function( msg, speaker ) {
+    var cmd = msg.shift();
     log('reached take_request')
+    log('invoking: ' + cmd)
+
     return this.my_commands.includes( cmd ) ? eval(`this.${cmd}(msg,speaker)`) : null;
   },
 
   reply_to: function( msg, speaker ) {
-    var cmd = msg.shift();
-    log('replying to command: ' + cmd);
-
     var answer = this.take_request( msg, speaker ) 
 
     return answer ? answer : this.confused_reply();
