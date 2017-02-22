@@ -34,43 +34,37 @@ var bot = {
 
   parse: function( content, author, channel ) {
     var msg = content.split(' ');
+    log('parsing: ' + msg);
 
-    if ( this.listening_to(channel) && ( author != config.my_name )) {
-      return this.reply_to( msg, author );
-    } else {
-      return null;
-    }
+    return should_hold_tongue(msg) ? null : this.reply_to( msg, author);
   },
 
-  listening_to: function(channel) {
+  listening_to: function( channel ) {
+    log('reached listening_to')
     return config.active_channels.includes(channel) ? true : false;
+  },
+
+  should_hold_tongue: function( msg ) {
+    log('reached should_hold_tongue')
+    return this.listening_to(channel) && ( author != config.my_name ) ? false : true;
+  },
+
+  take_request: function( cmd ) {
+    log('reached take_request')
+    return this.my_commands.includes( cmd ) ? eval(`this.${cmd}(msg,speaker)`) : null;
   },
 
   reply_to: function( msg, speaker ) {
     var cmd = msg.shift();
-    if ( this.my_commands.includes(cmd) ) {
-      return eval(`this.${cmd}(msg,speaker)`)
-    } else {
-      return this.confused_reply();
-    };
+    log('replying to command: ' + cmd);
+
+    answer = take_request( msg, speaker ) 
+
+    return answer ? answer : this.confused_reply();
   },
 
-  /*
-  // If the above looks messy, it replaced this:
-
-  this.reply_to = function(msg,speaker) {
-    switch(keyword = phrase.shift()) {
-      case 'help': return help(phrase);
-      case 'schedule': return schedule(phrase);
-      case 'cancel': return cancel(phrase);
-      case 'list': return list(phrase);
-      case 'signup': return signup(phrase);
-      default: return confused_reply();
-    }
-  } 
-  */
-
   confused_reply: function() {
+    log('unknown command')
     return "I'm sorry, I don't understand.";
   },
 
@@ -105,6 +99,8 @@ client.on('message', function(message) {
     var content = message.content;
     var author = message.author.username;
     var channel = message.channel.name;
+
+    log(`message received from ${author} in ${channel}`);
 
     var bot_reply = bot.parse( content, author, channel );
     
