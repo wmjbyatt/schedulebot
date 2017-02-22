@@ -8,22 +8,43 @@ function log(msg) {
 };
 
 function debug(msg) {
-  if (config.debug) { log('DEBUG - ' + msg) };
+  if (config.debug) {log('DEBUG - ' + msg)};
 };
 
 var eventbook = {
   add_event: function(owner, description) { return 5; },
-  cancel_event: function(event_id) {},
-  signup: function(event_id, name) {},
-  cancel_signup: function(owner, event_id) {},
-  list: function() {},
+
+  get_event: function(id) {
+    return {
+      id: '',
+      name: '',
+      owner: '',
+      start_time: '',
+      duration: '',
+      attendees: []
+    };
+  },
+
+  cancel_event: function(event_id) { return true; },
+
+  signup: function(event_id, name) { return true; },
+
+  cancel_signup: function(owner, event_id) { return true; },
+
+  list: function() {
+    return [
+      { },
+      { },
+      { }
+    ];
+  },
 };
 
 var bot = {
   my_commands: [ 'help', 'schedule', 'cancel', 'list', 'signup' ],
   /* 
   / 
-  / TODO: support modular registration of a new grammar
+  / TODO: support modular registration of new commands
   /
   my_commands: [],
 
@@ -110,27 +131,49 @@ var bot = {
   },
 
   help: function(msg) {
-    return "This is a stub help function.";
+    subcmd = msg.words.shift()
+    
+    switch(subcmd) {
+      case schedule:
+         
+      case cancel:
+
+      case list:
+
+      case signup:
+      
+      default: 
+        // usage
+    } 
+
+    return "";
   },
 
-  schedule: function(msg, author) {
-    try { return "Event added with ID " + eventbook.add_event(msg, author); }
-    catch(err) { return internal_error(err); }
+  schedule: function(msg) {
+    if (msg.from_coach) {
+      try { return "Event added with ID " + eventbook.add_event(msg.author, "event description"); }
+      catch(err) { return this.internal_error(err); }
+    } else {
+      return `Scheduling new events is restricted to users with role ${config.leader_role}.`
+    };
   },
 
-  cancel: function() {
+  cancel: function(msg) {
+    calendar_event = eventbook.get_event(id);
 
+    if (calendar_event.owner === message.author)
+    return this.todo;
   },
 
-  list: function() {
-
+  list: function(msg) {
+    return this.todo;
   },
 
-  signup: function() {
-
+  signup: function(msg) {
+    return this.todo;
   },
 
-
+  todo: "This feature is not yet implemented."
 }
 
 // Now register callbacks to the discord client
@@ -145,11 +188,9 @@ client.on('message', function(message) {
       words: message.cleanContent.split(' '),
       author: message.author.username,
       channel: message.channel.name,
-      from_coach: function() { message.author.hasRole(config.leader_role); },
+      from_coach: true, // message.author.hasRole(config.leader_role),
       bot_mentioned: message.isMentioned(client.user),
     };
-
-    debug('msg.words: ' + msg.words);
 
     log(`message received from ${msg.author} in ${msg.channel}`);
 
