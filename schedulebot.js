@@ -26,11 +26,34 @@ function eventbook() {
 */
 
 function log(msg) {
-  console.log(String(msg))
+  console.log(Date.now() + ' - ' + msg);
+};
+
+function debug(msg) {
+  if (config.debug) { log('DEBUG - ' + msg) };
 };
 
 var bot = {
   my_commands: [ 'help', 'schedule', 'cancel', 'list', 'signup' ],
+
+  /* 
+  / 
+  / TODO: support modular registration of a new grammar
+  /
+  my_commands: [],
+
+  command: function(name, func) {
+    bot.my_commands.push(name);
+    return function() {
+      debug('reached ' + name); func;
+    };
+  },
+
+  do_thing: command( 'do_thing', function(msg) {
+      // do the thing to msg
+  });
+  */
+
 
   parse: function( content, author, channel ) {
     var msg = content.split(' ');
@@ -40,19 +63,19 @@ var bot = {
   },
 
   listening_to: function( channel ) {
-    log('reached listening_to')
+    debug('reached listening_to')
     return config.active_channels.includes(channel) ? true : false;
   },
 
   should_hold_tongue: function( author, channel ) {
-    log('reached should_hold_tongue')
+    debug('reached should_hold_tongue')
     return this.listening_to(channel) && ( author != config.my_name ) ? false : true;
   },
 
   take_request: function( msg, speaker ) {
     var cmd = msg.shift();
-    log('reached take_request')
-    log('invoking: ' + cmd)
+    debug('reached take_request');
+    log('invoking: ' + cmd);
 
     return this.my_commands.includes( cmd ) ? eval(`this.${cmd}(msg,speaker)`) : null;
   },
