@@ -36,7 +36,7 @@ var bot = {
     var msg = content.split(' ');
     log('parsing: ' + msg);
 
-    return should_hold_tongue(msg) ? null : this.reply_to( msg, author);
+    return this.should_hold_tongue(author,channel) ? null : this.reply_to( msg, author);
   },
 
   listening_to: function( channel ) {
@@ -44,7 +44,7 @@ var bot = {
     return config.active_channels.includes(channel) ? true : false;
   },
 
-  should_hold_tongue: function( msg ) {
+  should_hold_tongue: function( author, channel ) {
     log('reached should_hold_tongue')
     return this.listening_to(channel) && ( author != config.my_name ) ? false : true;
   },
@@ -58,7 +58,7 @@ var bot = {
     var cmd = msg.shift();
     log('replying to command: ' + cmd);
 
-    answer = take_request( msg, speaker ) 
+    var answer = this.take_request( msg, speaker ) 
 
     return answer ? answer : this.confused_reply();
   },
