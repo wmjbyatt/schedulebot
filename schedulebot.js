@@ -170,9 +170,9 @@ var bot = {
     }
     
 
-    if (calendar_event.owner !=== msg.author) {
+    if (calendar_event.owner != msg.author) {
       return `Only ${calendar_event.owner} can delete that event.` 
-    } else if (words[0].match(/yes/i) {
+    } else if (words[0].match(/yes/i)) {
       return `You asked me to delete the following event: ${this.show_event(calendar_event.id)}. ` +
         `If you're really sure, say "${config.my_name} cancel ${requested_id} yes I'm sure"`;
     } else {
