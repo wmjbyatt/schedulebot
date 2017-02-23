@@ -27,9 +27,9 @@ var eventbook = {
 
   cancel_event: function(event_id) { return true; },
 
-  signup: function(event_id, name) { return true; },
+  add_attendee: function(event_id, name) { return true; },
 
-  cancel_signup: function(owner, event_id) { return true; },
+  remove_attendee: function(event_id, name) { return true; },
 
   list: function() {
     return [
@@ -130,6 +130,8 @@ var bot = {
     return "I have a headache.";
   },
 
+  // commands
+
   help: function(msg) {
     subcmd = msg.words.shift()
     
@@ -141,16 +143,16 @@ var bot = {
       case list:
 
       case signup:
-      
+
       default: 
-        return `The commands I know are schedule, signup, list, cancel, and help.  Try: ${config.my_name} help <command>.`;
+        return `The commands I know are schedule, signup, list, cancel, and help.  Try: ${config.my_name} help <command>.` ;
     } 
 
   },
 
   schedule: function(msg) {
     if (msg.from_coach) {
-      try { return "Event added with ID " + eventbook.add_event(msg.author, "event description"); }
+      try { return `Event added with ID ${eventbook.add_event( msg.author, msg.words )}` }
       catch(err) { return this.internal_error(err); }
     } else {
       return `Scheduling new events is restricted to users with role ${config.leader_role}.`
@@ -158,9 +160,25 @@ var bot = {
   },
 
   cancel: function(msg) {
-    calendar_event = eventbook.get_event(id);
+    // next word should be the event id
+    requested_id = msg.words.shift()
+    try {
+      calendar_event = eventbook.get_event(id);
+    } catch(err) {
+      log(err);
+      return `Either ${requested_id} isn't a valid event ID, or there's something wrong with my brain.`;
+    }
+    
 
-    if (calendar_event.owner === message.author)
+    if (calendar_event.owner !=== msg.author) {
+      return `Only ${calendar_event.owner} can delete that event.` 
+    } else if (words[0].match(/yes/i) {
+      return `You asked me to delete the following event: ${this.show_event(calendar_event.id)}. ` +
+        `If you're really sure, say "${config.my_name} cancel ${requested_id} yes I'm sure"`;
+    } else {
+       
+    }
+
     return this.todo;
   },
 
