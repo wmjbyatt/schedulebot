@@ -127,7 +127,7 @@ var bot = {
 
   internal_error: function(err) {
     log(err);
-    return "I have a headache.";
+    return this.complaint();
   },
 
   // commands
@@ -151,11 +151,25 @@ var bot = {
   },
 
   schedule: function(msg) {
-    if (msg.from_coach) {
-      try { return `Event added with ID ${eventbook.add_event( msg.author, msg.words )}` }
-      catch(err) { return this.internal_error(err); }
+    if (msg.from_leader) {
+
+      try {
+        id = eventbook.add_event(msg.author,msg.words);
+        this.success(id);
+      } catch(err) {
+        return this.internal_error(err);
+      };
+
     } else {
-      return `Scheduling new events is restricted to users with role ${config.leader_role}.`
+      return this.leader_only();
+    };
+
+    var leader_only = function(role) {
+      return `Scheduling new events is restricted to users with role ${role}.`;
+    };
+
+    var success = function(id) {
+      return `Event added with ID ${id}.`
     };
   },
 
@@ -171,26 +185,44 @@ var bot = {
     
 
     if (calendar_event.owner != msg.author) {
-      return `Only ${calendar_event.owner} can delete that event.` 
+      return this.owner_only(calendar_event.owner);
     } else if (words[0].match(/yes/i)) {
-      return `You asked me to delete the following event: ${this.show_event(calendar_event.id)}. ` +
-        `If you're really sure, say "${config.my_name} cancel ${requested_id} yes I'm sure"`;
+      return this.confirm_cancel(id);
     } else {
-       
-    }
+      
+      try {
+        eventbook.cancel(requested_id);
+        return this.success(requested_id);
+      } catch(err) {
+        return this.internal_error(err);
+      }
 
-    return this.todo;
+    };
+
+    var owner_only = function(owner) {
+      return `Only ${owner} can delete that event.`;
+    };
+
+    var confirm_cancel = function(id) {
+      return `You asked me to delete the following event: ${id}. ` +
+        `If you're really sure, say "${config.my_name} cancel ${id} yes I'm sure"`;
+    };
+
+    var success = function(id) {
+      return `Event ${id} has been deleted.`;
+    };
   },
 
   list: function(msg) {
-    return this.todo;
+    return this.todo();
   },
 
   signup: function(msg) {
-    return this.todo;
+    return this.todo();
   },
 
-  todo: "This feature is not yet implemented."
+  todo: function() { return "This feature is not yet implemented."; },
+  complaint: function() { return "I have a headache."; }
 }
 
 // Now register callbacks to the discord client
@@ -205,7 +237,7 @@ client.on('message', function(message) {
       words: message.cleanContent.split(' '),
       author: message.author.username,
       channel: message.channel.name,
-      from_coach: true, // message.author.hasRole(config.leader_role),
+      from_leader: true, // message.author.hasRole(config.leader_role),
       bot_mentioned: message.isMentioned(client.user),
     };
 
