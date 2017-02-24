@@ -1,7 +1,7 @@
 // bot/command.js
 
 var eventbook = require('./command/eventbook.js');
-var eventbook = require('./reply.js');
+var reply = require('./reply.js');
 
 var all_commands = [
   'help',
@@ -13,9 +13,8 @@ var all_commands = [
 ];
 
 var help = function(msg) {
-  help_topics = [schedule,signup,list,cancel,dropout];
   subcmd = msg.words.shift();
-  return help_topics.includes(subcmd) ? eval(`reply.help_${subcmd}()`) : reply.help_default();
+  return all_commands.includes(subcmd) ? eval(`reply.help_${subcmd}()`) : reply.help_default(all_commands);
 };
 
 var schedule = function(msg) {
@@ -25,7 +24,7 @@ var schedule = function(msg) {
       id = eventbook.add_event(msg.author,msg.words);
       return reply.add_event_success(id);
     } catch(err) {
-      return reply.event_lookup_error(id);
+      return reply.schedule_event_error();
     };
 
   } else {

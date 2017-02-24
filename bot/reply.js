@@ -32,7 +32,9 @@ var dropout_success = function(id) { return `You have dropped out of event ${id}
 
 var show_event = function(e) { return `At ${rounded_date(e.start_time,hours,tz)}, ${e.name ? e.name : "event"} with ${e.owner} for ${e.duration}.`; };
 
-var event_lookup_error = function(id) { return `Maybe ${requested_id} isn't a valid event ID, or perhaps there's something else wrong.`; };
+var event_lookup_error = function(id) { return `Maybe ${id} isn't a valid event ID, or perhaps there's something else wrong.`; };
+
+var schedule_event_error = function() { return "I couldn't schedule your event for some reason."; };
 
 var rounded_date = function(date,increment,tz) { // TODO
   return(this.say_date(date,tz));
@@ -79,6 +81,7 @@ var help_default = function(cmds) { return `The commands I know are: ${cmds.join
   'dropout_success',
   'show_event',
   'event_lookup_error',
+  'schedule_event_error',
   'rounded_date',
   'say_date',
   'crazy_date',
