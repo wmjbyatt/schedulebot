@@ -1,4 +1,6 @@
 var bot = {
+  require(bot/reply.js);
+
   my_commands: [ 'help', 'schedule', 'cancel', 'list', 'signup' ],
   /* 
   / 
@@ -63,7 +65,7 @@ var bot = {
 
   reply_to: function(msg) {
     var answer = this.take_request(msg) 
-    return answer ? answer : this.confused_reply();
+    return answer ? answer : this.reply.confused();
   },
 
   take_request: function(msg) {
@@ -76,16 +78,9 @@ var bot = {
     };
   },
 
-  // Replies:
-
-  confused_reply: function() {
-    log('unknown command')
-    return "I'm sorry, I don't understand.";
-  },
-
   internal_error: function(err) {
     log(err);
-    return this.complaint();
+    return this.reply.complaint();
   },
 
   // commands
@@ -119,16 +114,9 @@ var bot = {
       };
 
     } else {
-      return this.leader_only();
+      return this.reply.only_leader_schedules();
     };
 
-    var leader_only = function(role) {
-      return `Scheduling new events is restricted to users with role ${role}.`;
-    };
-
-    var success = function(id) {
-      return `Event added with ID ${id}.`
-    };
   },
 
   cancel: function(msg) {
@@ -161,18 +149,20 @@ var bot = {
       return `Only ${owner} can delete that event.`;
     };
 
-    var confirm_cancel = function(id) {
+    var confirm_cancel_event = function(id) {
       return `You asked me to delete the following event: ${id}. ` +
         `If you're really sure, say "${config.my_name} cancel ${id} yes I'm sure"`;
     };
 
-    var success = function(id) {
-      return `Event ${id} has been deleted.`;
-    };
   },
 
   list: function(msg) {
-    return this.todo();
+    var event_list = [];
+    var reply = []
+
+    eventbook.list().forEach( e => event_list.push(e) );
+    event_list.sort.forEach( e => reply.push(this.replies.show_event(e)) );
+    return reply.join("\n");
   },
 
   signup: function(msg) {
@@ -183,6 +173,4 @@ var bot = {
     return this.todo();
   },
 
-  todo: function() { return "This feature is not yet implemented."; },
-  complaint: function() { return "I have a headache."; }
 };
