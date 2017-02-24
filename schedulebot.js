@@ -7,13 +7,12 @@ const config = require('./config.json');
 require('./eventbook.js');
 require('./bot.js');
 
-function log(msg,loglevel) {
-  var levels = {
-    0: 'INFO',
-    1: 'DEBUG',
-  };
+var log = function(msg,lvl) {
+  log_levels: ['INFO','DEBUG'];
+  get_level: function (n) { return this.log_levels[n]; };
+  format_entry: function(msg,lvl) {return `${Date.now()} - ${this.get_level(lvl)} - ${msg}`;};
 
-  console.log(`${Date.now()} - ${this.levels.loglevel} - ${msg}`);
+  console.log(log_entry(msg,lvl));
 };
   
 client.on('ready', () => { log(`${config.my_name} online!`) });
