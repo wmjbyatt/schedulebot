@@ -19,9 +19,13 @@ var reply = function {
 
   cancel_event_success: function(id) { return `Event ${id} has been deleted.`; };
 
+  signup_success: function(id) { return `You have been added to the roster for event ${id}.`; };
+
+  dropout_success: function(id) { return `You have dropped out of event ${id}.`; };
+
   show_event = function(e) { return `At ${rounded_date(e.start_time,hours,)}, ${e.name ? e.name : "event"} with ${e.owner} for ${e.duration}.`; }
 
-  invalid_event = function(id) { return `Either ${requested_id} isn't a valid event ID, or there's something wrong with my brain.`; };
+  event_lookup_error = function(id) { return `Maybe ${requested_id} isn't a valid event ID, or perhaps there's something else wrong.`; };
 
   rounded_date: function(date,increment,tz { // TODO
     return(this.say_date(date,tz));

@@ -6,10 +6,11 @@ var command = function() {
   /
   my_commands: [],
 
-  command: function(name, func) {
-    bot.my_commands.push(name);
+  command: function( name,func ) {
+    bot.command.my_commands.push(name);
     return function() {
-      debug('reached ' + name); func;
+      debug('reached ' + name);
+      func();
     };
   },
 
@@ -20,7 +21,6 @@ var command = function() {
   help: function(msg) {
     help_topics = [schedule,signup,list,cancel,dropout]
     subcmd = msg.words.shift()
-
     return help_topics.includes(subcmd) ? eval(`this.reply.help_${subcmd}()`) : this.reply.help_default();
   },
 
@@ -31,7 +31,7 @@ var command = function() {
         id = eventbook.add_event(msg.author,msg.words);
         this.success(id);
       } catch(err) {
-        return this.internal_error(err);
+        return this.reply.event_lookup_error(id);
       };
 
     } else {
@@ -41,13 +41,13 @@ var command = function() {
   },
 
   cancel: function(msg) {
-    // next word should be the event id
-    requested_id = msg.words.shift()
+    requested_id = msg.words.shift();
+
     try {
       calendar_event = eventbook.get_event(id);
     } catch(err) {
       log(err);
-      return this.reply.invalid_event();
+      return this.reply.event_lookup_error(id);
     }
 
     if (calendar_event.owner != msg.author) {
@@ -56,17 +56,17 @@ var command = function() {
       return this.confirm_cancel(id);
     } else {
       try {
-        eventbook.cancel(requested_id);
-        return this.success(requested_id);
+        eventbook.cancel(id);
+        return this.reply.cancel_event_success(id);
       } catch(err) {
         return this.internal_error(err);
-      }
+      };
     };
   },
 
   list: function(msg) {
     var event_list = [];
-    var reply = []
+    var reply = [];
 
     eventbook.list().forEach( e => event_list.push(e) );
     event_list.sort.forEach( e => reply.push(this.replies.show_event(e)) );
@@ -74,10 +74,24 @@ var command = function() {
   },
 
   signup: function(msg) {
-    return this.todo();
+    requested_id = msg.words.shift();
+
+    try {
+      eventbook.add_attendee(id,msg.author);
+      return this.reply.signup_success(id);
+    } catch {
+      return this.reply.event_lookup_error(id);
+    };
   },
 
   dropout: function(msg) {
-    return this.todo();
+    requested_id = msg.words.shift();
+  
+    try {
+      eventbook.remove_attendee(id,msg.author);
+      return this.reply.dropout_success(id);
+    } catch {
+      return this.reply.event_lookup_error(id);
+    };
   },
 };
