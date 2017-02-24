@@ -29,13 +29,13 @@ var bot = {
     debug('keyword: ' + keyword);
 
     if (config.alert_words) {
-      return this.alert_word(keyword) ? true : false;
+      return this.is_alert_word(keyword);
     } else {
       return true;
     };
   },
 
-  alert_word: function (word) { return config.alert_words.includes(word) ? true : false; },
+  is_alert_word: function (word) { return config.alert_words.includes(word); },
 
   reply_to: function(msg) {
     var answer = this.take_request(msg) 
