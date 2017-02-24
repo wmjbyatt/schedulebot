@@ -86,21 +86,10 @@ var bot = {
   // commands
 
   help: function(msg) {
+    help_topics = [schedule,signup,list,cancel,dropout]
     subcmd = msg.words.shift()
-    
-    switch(subcmd) {
-      case schedule:
-         
-      case cancel:
 
-      case list:
-
-      case signup:
-
-      default: 
-        return `The commands I know are schedule, signup, list, cancel, and help.  Try: ${config.my_name} help <command>.` ;
-    } 
-
+    return help_topics.includes(subcmd) ? eval(`this.reply.help_${subcmd}()`) : this.reply.help_default();
   },
 
   schedule: function(msg) {
@@ -126,7 +115,7 @@ var bot = {
       calendar_event = eventbook.get_event(id);
     } catch(err) {
       log(err);
-      return `Either ${requested_id} isn't a valid event ID, or there's something wrong with my brain.`;
+      return this.reply.invalid_event();
     }
     
 
@@ -143,15 +132,6 @@ var bot = {
         return this.internal_error(err);
       }
 
-    };
-
-    var owner_only = function(owner) {
-      return `Only ${owner} can delete that event.`;
-    };
-
-    var confirm_cancel_event = function(id) {
-      return `You asked me to delete the following event: ${id}. ` +
-        `If you're really sure, say "${config.my_name} cancel ${id} yes I'm sure"`;
     };
 
   },

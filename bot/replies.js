@@ -21,6 +21,8 @@ var reply = function {
 
   show_event = function(e) { return `At ${rounded_date(e.start_time,hours,)}, ${e.name ? e.name : "event"} with ${e.owner} for ${e.duration}.`; }
 
+  invalid_event = function(id) { return `Either ${requested_id} isn't a valid event ID, or there's something wrong with my brain.`; };
+
   rounded_date: function(date,increment,tz { // TODO
     return(this.say_date(date,tz));
   },
@@ -36,5 +38,16 @@ var reply = function {
 
   crazy_date: function() { return "Flubuary the 42nd at thirteen o' clock" };
 
+  help_schedule: function() { return this.todo(); };
+
+  help_cancel: function() { return this.todo(); };
+
+  help_list: function() { return this.todo(); };
+
+  help_signup: function() { return this.todo(); };
+
+  help_dropout: function() { return this.todo(); };
+
+  help_default: function(cmds) { return `The commands I know are: ${cmds.join(', ')}.  Try: ${config.my_name} help <command>.`; };
 
 };
