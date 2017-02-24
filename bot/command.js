@@ -1,10 +1,7 @@
-var bot = {
-  require('bot/reply.js');
-  require('bot/command.js');
-
+var command = function() {
   my_commands: [ 'help', 'schedule', 'cancel', 'list', 'signup' ],
-  /* 
-  / 
+  /*
+  /
   / TODO: support modular registration of new commands
   /
   my_commands: [],
@@ -20,72 +17,6 @@ var bot = {
       // do the thing to msg
   });
   */
-
-  // Grammar nodes:
-
-  parse: function(msg) {
-    log('parsing: ' + msg.words );
-    var keyword = config.alert_words ? msg.words.shift() : null;
-
-    if ( !this.listening_to(msg.channel) ) {
-      return null;
-    } else if ( !this.for_me(keyword) ){
-      return null;
-    } else if ( msg.author == config.my_name) {
-      return null
-    } else {
-      return this.reply_to(msg);
-    };
-  },
-
-  listening_to: function(channel) {
-    return config.active_channels.includes(channel) ? true : false;
-  },
-
-  for_me: function(keyword) {
-    debug('function: for_me');
-    debug('config.alert_words: ' + config.alert_words);
-    debug('keyword: ' + keyword);
-    
-    var alert = function (word) { return config.alert_words.includes(word) ? true : false; };
-    /*
-    /
-    / TODO: Fix this:
-    /
-    var alert = function (word) {
-      config.alert_words.map( function(x) {return x.includes(word);} );
-    };
-    */
-
-    if (config.alert_words) {
-      return alert(keyword) ? true : false;
-    } else {
-      return true;
-    };
-  },
-
-  reply_to: function(msg) {
-    var answer = this.take_request(msg) 
-    return answer ? answer : this.reply.confused();
-  },
-
-  take_request: function(msg) {
-    if (msg) { 
-      var cmd = msg.words.shift();
-      log('invoking: ' + cmd);
-      return this.my_commands.includes(cmd) ? eval(`this.reply.${cmd}(msg)`) : null;
-    } else {
-      return null;
-    };
-  },
-
-  internal_error: function(err) {
-    log(err);
-    return this.reply.complaint();
-  },
-
-  // commands
-
   help: function(msg) {
     help_topics = [schedule,signup,list,cancel,dropout]
     subcmd = msg.words.shift()
@@ -118,23 +49,19 @@ var bot = {
       log(err);
       return this.reply.invalid_event();
     }
-    
 
     if (calendar_event.owner != msg.author) {
       return this.owner_only(calendar_event.owner);
     } else if (words[0].match(/yes/i)) {
       return this.confirm_cancel(id);
     } else {
-      
       try {
         eventbook.cancel(requested_id);
         return this.success(requested_id);
       } catch(err) {
         return this.internal_error(err);
       }
-
     };
-
   },
 
   list: function(msg) {
@@ -153,5 +80,4 @@ var bot = {
   dropout: function(msg) {
     return this.todo();
   },
-
 };

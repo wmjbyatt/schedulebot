@@ -29,6 +29,7 @@ var reply = function {
 
   say_date: function(date,tz) {
     try {
+      // TODO limit precision to a reasonable default
       return String(date);
     } catch(err) {
       log("invalid date in say_date");
