@@ -1,9 +1,27 @@
 schedulebot is a discord application written for the Goldwatch community.
 
-The bot is little more than scaffolding, and the following commands are currently stubs.
+currently supported commands:
 
 help
 schedule
 cancel
 list
+show
 signup
+dropout
+
+make go:
+
+clone repo
+install nodejs (developed against 6.9.5)
+install mongodb
+in repo dir do:
+  npm install --save discord.js
+  npm install --save mongodb
+copy config.json.example to config.json and edit
+create an unprivileged service user if you care about not getting hacked
+  or don't
+wrap the node process in a service if you care about reliability
+  or don't
+
+$ nodejs schedulebot.js
