@@ -8,12 +8,12 @@ require('./eventbook.js');
 require('./bot.js');
 
 function log(msg,loglevel) {
-  console.log(`${Date.now()} - ${levels.loglevel} - ${msg}`);
-
   var levels = {
     0: 'INFO',
     1: 'DEBUG',
   };
+
+  console.log(`${Date.now()} - ${this.levels.loglevel} - ${msg}`);
 };
   
 client.on('ready', () => { log(`${config.my_name} online!`) });
