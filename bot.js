@@ -1,7 +1,4 @@
 var bot = {
-  require('bot/reply.js');
-  require('bot/command.js');
-
   my_commands: [ 'help', 'schedule', 'cancel', 'list', 'signup' ],
 
   parse: function(msg) {

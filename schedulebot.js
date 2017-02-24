@@ -6,9 +6,15 @@ const config = require('./config.json');
 // import tree
 require('./eventbook.js');
 require('./bot.js');
-require('./logging.js');
 
-// Now register callbacks to the discord client
+function log(msg,loglevel) {
+  console.log(`${Date.now()} - ${levels.loglevel} - ${msg}`);
+
+  var levels = {
+    0: 'INFO',
+    1: 'DEBUG',
+  };
+};
   
 client.on('ready', () => { log(`${config.my_name} online!`) });
 
