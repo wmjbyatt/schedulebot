@@ -13,11 +13,11 @@ dropout
 make go:
 
 clone repo
-install nodejs (developed against 6.9.5)
-install mongodb
-in repo dir do:
-  npm install --save discord.js
-  npm install --save mongodb
+install
+  nodejs (developed against 6.9.5)
+  npm
+  mongodb
+in repo dir do `npm update`
 copy config.json.example to config.json and edit
 create an unprivileged service user if you care about not getting hacked
   or don't
