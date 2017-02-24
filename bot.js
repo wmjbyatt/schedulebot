@@ -1,6 +1,4 @@
 var bot = {
-  my_commands: [ 'help', 'schedule', 'cancel', 'list', 'signup' ],
-
   parse: function(msg) {
     log('parsing: ' + msg.words );
     var keyword = config.alert_words ? msg.words.shift() : null;
@@ -21,10 +19,6 @@ var bot = {
   },
 
   for_me: function(keyword) {
-    debug('function: for_me');
-    debug('config.alert_words: ' + config.alert_words);
-    debug('keyword: ' + keyword);
-
     if (config.alert_words) {
       return this.is_alert_word(keyword);
     } else {
