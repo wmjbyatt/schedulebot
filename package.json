@@ -1,0 +1,28 @@
+{
+  "name": "schedulebot",
+  "version": "0.0.1",
+  "description": "discord bot for event roster management",
+  "main": "schedulebot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aaronboyle/schedulebot.git"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "chatbot"
+  ],
+  "author": "Aaron W. Boyle",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/aaronboyle/schedulebot/issues"
+  },
+  "homepage": "https://github.com/aaronboyle/schedulebot#readme",
+  "dependencies": {
+    "discord.js": "^11.0.0",
+    "mongodb": "^2.2.24"
+  }
+}
