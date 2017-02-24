@@ -1,5 +1,5 @@
 var command = function() {
-  my_commands: [ 'help', 'schedule', 'cancel', 'list', 'signup' ],
+  my_commands: [ 'help', 'schedule', 'cancel', 'list', 'signup', 'show' ],
   /*
   /
   / TODO: support modular registration of new commands
@@ -41,7 +41,7 @@ var command = function() {
   },
 
   cancel: function(msg) {
-    requested_id = msg.words.shift();
+    id = msg.words.shift();
 
     try {
       calendar_event = eventbook.get_event(id);
@@ -69,12 +69,24 @@ var command = function() {
     var reply = [];
 
     eventbook.list().forEach( e => event_list.push(e) );
-    event_list.sort.forEach( e => reply.push(this.replies.show_event(e)) );
+    event_list.sort.forEach( e => reply.push(this.show(e.id)) );
     return reply.join("\n");
   },
 
+  show: function(msg) {
+    id = msg.words.shift();
+
+    try {
+      eventbook.get_event(id);
+    } catch {
+      return this.reply.event_error(id);
+    };
+
+    return this.reply.show_event(id);
+  },
+
   signup: function(msg) {
-    requested_id = msg.words.shift();
+    id = msg.words.shift();
 
     try {
       eventbook.add_attendee(id,msg.author);
@@ -85,7 +97,7 @@ var command = function() {
   },
 
   dropout: function(msg) {
-    requested_id = msg.words.shift();
+    id = msg.words.shift();
   
     try {
       eventbook.remove_attendee(id,msg.author);
