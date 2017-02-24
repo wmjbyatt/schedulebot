@@ -1,5 +1,5 @@
 var bot = {
-  require(bot/reply.js);
+  require('bot/reply.js');
 
   my_commands: [ 'help', 'schedule', 'cancel', 'list', 'signup' ],
   /* 
