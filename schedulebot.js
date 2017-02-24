@@ -1,12 +1,20 @@
-#!/usr/bin/nodejs --use_strict
-const Discord = require("discord.js");
+#!/usr/bin/nodejs --use-strict
+const Discord = require('discord.js');
 const client = new Discord.Client();
-const config = require('./config.json');
 
-// import tree
-require('./eventbook.js');
-require('./bot.js');
+global.config = require('./config.json');
 
+global.log = function(msg) {
+  console.log(Date.now() + ' - ' + msg);
+};
+
+global.debug = function(msg) {
+  if (config.debug) {log('DEBUG - ' + msg)};
+};
+
+var bot = require('./bot.js');
+
+/*
 var log = function(msg,lvl) {
   log_levels: ['INFO','DEBUG'];
   get_level: function (n) { return this.log_levels[n]; };
@@ -14,6 +22,9 @@ var log = function(msg,lvl) {
 
   console.log(log_entry(msg,lvl));
 };
+*/
+
+log('test log');
   
 client.on('ready', () => { log(`${config.my_name} online!`) });
 
@@ -26,11 +37,14 @@ client.on('message', function(message) {
       bot_mentioned: message.isMentioned(client.user),
     };
 
-    log(`message received from ${msg.author} in ${msg.channel}`);
+    debug(`message received from ${msg.author} in ${msg.channel}`);
 
-    var bot_reply = bot.parse(msg);
+    var reply = bot.hear(msg);
     
-    if ( bot_reply ) { message.reply( bot_reply ) };
+    if (reply) {
+      log(`replying to ${msg.author} in ${msg.channel}`);
+      message.reply(reply);
+    };
 });
 
 client.login(config.auth_token); // Make it go
