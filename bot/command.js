@@ -19,7 +19,6 @@ var help = function(msg) {
 
 var schedule = function(msg) {
   if (msg.from_leader) {
-
     try {
       id = eventbook.add_event(msg.author,msg.words);
       return reply.add_event_success(id);

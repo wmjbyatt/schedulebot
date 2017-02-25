@@ -1,3 +1,5 @@
+// bot/reply.js
+
 const REPLIES = {
   only_owner_deletes:     (owner) => { return `Only ${owner} can delete that event.`; },
   only_leader_schedules:  (role)  => { return `Scheduling new events is restricted to users with role ${role},`; },
