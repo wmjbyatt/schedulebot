@@ -24,11 +24,7 @@ var active_in_channel = function(channel) {
 };
 
 var for_me = function(keyword) {
-  if (config.alert_words) {
-    return is_alert_word(keyword);
-  } else {
-    return true;
-  };
+  return config.alert_words ? is_alert_word(keyword) : true;
 };
 
 var is_alert_word = function (word) { return config.alert_words.includes(word); };
