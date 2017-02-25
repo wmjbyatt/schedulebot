@@ -7,7 +7,7 @@ var hear = function(msg) {
   log('parsing: ' + msg.words );
   var keyword = config.alert_words ? msg.words.shift() : null;
 
-  if ( !listening_to(msg.channel) ) {
+  if ( !active_in_channel(msg.channel) ) {
     return null;
   } else if ( !for_me(keyword) ){
     return null;
@@ -23,7 +23,7 @@ var hear = function(msg) {
 var reply = require('./bot/reply.js');
 var command = require('./bot/command.js');
 
-var listening_to = function(channel) {
+var active_in_channel = function(channel) {
   return config.active_channels.includes(channel) ? true : false;
 };
 
