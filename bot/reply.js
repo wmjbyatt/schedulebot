@@ -37,7 +37,7 @@ var event_lookup_error = function(id) { return `Maybe ${id} isn't a valid event 
 var schedule_event_error = function() { return "I couldn't schedule your event for some reason."; };
 
 var rounded_date = function(date,increment,tz) { // TODO
-  return(this.say_date(date,tz));
+  return(say_date(date,tz));
 };
 
 var say_date = function(date,tz) {
@@ -46,7 +46,7 @@ var say_date = function(date,tz) {
     return String(date);
   } catch(err) {
     log("invalid date in say_date");
-    return this.crazy_date();
+    return crazy_date();
   };
 };
 
@@ -54,15 +54,15 @@ var crazy_date = function() { return "Flubuary the 42nd at thirteen o' clock" };
 
 var help_todo = function() { return "I haven't been taught how to help you with that." };
 
-var help_schedule = function() { return this.help_todo(); };
+var help_schedule = function() { return help_todo(); };
 
-var help_cancel = function() { return this.help_todo(); };
+var help_cancel = function() { return help_todo(); };
 
-var help_list = function() { return this.help_todo(); };
+var help_list = function() { return help_todo(); };
 
-var help_signup = function() { return this.help_todo(); };
+var help_signup = function() { return help_todo(); };
 
-var help_dropout = function() { return this.help_todo(); };
+var help_dropout = function() { return help_todo(); };
 
 var help_default = function(cmds) { return `The commands I know are: ${cmds.join(', ')}.  Try: ${config.my_name} help <command>.`; };
 
