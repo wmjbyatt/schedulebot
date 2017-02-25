@@ -7,21 +7,17 @@ var hear = function(msg) {
   log('parsing: ' + msg.words );
   var keyword = config.alert_words ? msg.words.shift() : null;
 
-  if ( !active_in_channel(msg.channel) ) {
-    return null;
-  } else if ( !for_me(keyword) ){
-    return null;
-  } else if ( msg.author == config.my_name) {
-    return null
-  } else {
-    return reply_to(msg);
-  };
+  if ( should_reply_to(msg,keyword) ) { return reply_to(msg); };
 };
 
 // Internal methods
 
 var reply = require('./bot/reply.js');
 var command = require('./bot/command.js');
+
+var should_reply_to = function (msg,keyword) {
+  return active_in_channel(msg.channel) && for_me(keyword) && (msg.author != config.my_name);
+};
 
 var active_in_channel = function(channel) {
   return config.active_channels.includes(channel) ? true : false;
